@@ -7,6 +7,7 @@ package com.crp.qa.qaGateWay.controller;
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,8 +42,8 @@ public class QaLoginController extends QaBaseController{
 	@PostMapping(path="/login")
 	public QaBaseTransfer Login(
 			@RequestParam(value="account") String account,
-			@RequestParam(value="password") String password ) {
-		QaBaseTransfer dto = new QaBaseTransfer();		
+			@RequestParam(value="password") String password) {
+		QaBaseTransfer dto = new QaBaseTransfer();
 		try {
 			dto = qaLoginService.login(account,password);
 		} catch (QaLoginException e) {

@@ -85,7 +85,7 @@ public class LoginFilter implements Filter{
 				}
 			}
 			//如果没有token，token不匹配，则返回错误
-			if(token==null||!qaTokenService.isExists(token+"gateway")) {
+			if(token==null||!qaTokenService.isExists(token)) {
 				servletResponse.sendRedirect(basepath + "/error/notoken");
 				return;
 			}

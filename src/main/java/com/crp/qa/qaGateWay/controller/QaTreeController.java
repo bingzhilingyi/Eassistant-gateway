@@ -4,21 +4,30 @@
  */
 package com.crp.qa.qaGateWay.controller;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.crp.qa.qaGateWay.domain.dto.QaTreeSimpleDto;
 import com.crp.qa.qaGateWay.service.inte.QaTreeService;
 import com.crp.qa.qaGateWay.util.exception.QaTreeException;
+import com.crp.qa.qaGateWay.util.file.FileUtil;
 import com.crp.qa.qaGateWay.util.transfer.QaBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericPagedTransfer;
 
@@ -34,6 +43,12 @@ public class QaTreeController extends QaBaseController{
 
 	@Resource(name="qaTreeService")
 	private QaTreeService qaTreeService;
+	
+	@Value("${FILEPATH.UPLOAD}")
+    private String FILE_UPLOAD_PATH;
+	
+	@Value("${FILEPATH.DOWNLOAD}")
+    private String FILE_DOWNLOAD_PATH;
 	
 	/**
 	 * 查找所有root节点
@@ -194,5 +209,31 @@ public class QaTreeController extends QaBaseController{
 			returnError(e, dto);
 		}
 		return dto;
+	}
+	
+	@PostMapping(path="/upload")
+	public QaBaseTransfer upload(@RequestBody MultipartFile image,HttpServletRequest request) {
+		//创建返回对象
+		QaBaseTransfer dto = new QaBaseTransfer("success","上传成功！");
+		//创建独一无二的文件名
+        String fileName = image.getOriginalFilename();
+        String[] filenames = fileName.split("\\.");
+        fileName = UUID.randomUUID().toString().replaceAll("-", "") + "."+filenames[filenames.length-1];
+        //生成上传与下载路径
+        Calendar now = Calendar.getInstance();
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH)+1;
+        String uploadpath = FILE_UPLOAD_PATH+year+"/"+month+"/";
+        String downloadpath = FILE_DOWNLOAD_PATH+year+"/"+month+"/"+fileName;
+        
+        try {
+            FileUtil.uploadFile(image.getBytes(), uploadpath, fileName);
+            dto.setContent(downloadpath);
+        } catch (Exception e) {
+        	returnError(e, dto);
+        }
+        //返回json
+        return dto;
+	    
 	}
 }

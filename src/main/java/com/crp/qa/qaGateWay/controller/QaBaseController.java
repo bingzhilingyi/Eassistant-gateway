@@ -19,7 +19,7 @@ import com.crp.qa.qaGateWay.util.transfer.QaGenericBaseTransfer;
 @Component 
 public class QaBaseController {
 	
-	private final Logger LOGGER = LoggerFactory.getLogger(QaBaseController.class);
+	final Logger LOGGER = LoggerFactory.getLogger(QaBaseController.class);
 		
 	/**
 	 * 返回错误信息并打印日志的通用方法
