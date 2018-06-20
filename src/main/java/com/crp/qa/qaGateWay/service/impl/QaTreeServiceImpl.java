@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.transaction.Transactional;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
@@ -89,8 +90,6 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 		//get json数据
 		@SuppressWarnings("unchecked")
 		QaGenericPagedTransfer<List<QaTreeSimpleDto>> dto = restTemplate.getForEntity(url, QaGenericPagedTransfer.class,uriVariables).getBody();
-		//JSONObject json = restTemplate.getForEntity(url, JSONObject.class,uriVariables).getBody();
-		//QaPagedTransfer dto = json.toJavaObject(QaPagedTransfer.class);
 		return dto;
 	}
 
@@ -126,15 +125,15 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 	}
 
 	@Override
-	public QaGenericBaseTransfer<QaTreeDto> findChildrenByTitle(String title) throws QaTreeException {
-		String url = URL_CORE+"/tree/findChildrenByTitle?token={token}&title={title}";
+	public QaGenericBaseTransfer<QaTreeDto> findChildrenByTitle(String title,Boolean isNeedRecord) throws QaTreeException {
+		String url = URL_CORE+"/tree/findChildrenByTitle?token={token}&title={title}&isNeedRecord={isNeedRecord}";
 		//获取参数集合
 		Map<String,String> uriVariables= this.getParamMap("CORE");
 		uriVariables.put("title", title);
+		uriVariables.put("isNeedRecord", isNeedRecord.toString());
 		//get json数据
 		@SuppressWarnings("unchecked")
 		QaGenericBaseTransfer<QaTreeDto> dto = restTemplate.getForEntity(url, QaGenericBaseTransfer.class,uriVariables).getBody();
-		//QaBaseTransfer dto = json.toJavaObject(QaBaseTransfer.class);
 		return dto;
 	}
 
@@ -148,5 +147,16 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 		@SuppressWarnings("unchecked")
 		QaGenericPagedTransfer<List<QaTreeSimpleDto>> dto = restTemplate.getForEntity(url, QaGenericPagedTransfer.class,uriVariables).getBody();
 		return dto;
+	}
+
+	@Override
+	@Async
+	public void searchRecord(String title) throws QaTreeException {
+		String url = URL_CORE+"/tree/searchRecord";
+		//注意，post只能用MultiValueMap传递表单
+		MultiValueMap<String,String> uriVariables= this.getMultiValueMap("CORE");
+		uriVariables.add("title", title);
+      	//发起rest请求
+		restTemplate.postForEntity(url, uriVariables, JSONObject.class).getBody();
 	}
 }

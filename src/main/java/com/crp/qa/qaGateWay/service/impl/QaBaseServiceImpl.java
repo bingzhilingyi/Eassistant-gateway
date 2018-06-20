@@ -34,8 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class QaBaseServiceImpl implements QaBaseService{
 	
-	@SuppressWarnings("unused")
-	private final Logger LOGGER = LoggerFactory.getLogger(QaBaseServiceImpl.class);
+	final Logger LOGGER = LoggerFactory.getLogger(QaBaseServiceImpl.class);
 	
 	@Autowired
 	protected RestTemplate restTemplate;

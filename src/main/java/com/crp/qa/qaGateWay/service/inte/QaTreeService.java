@@ -7,6 +7,7 @@ package com.crp.qa.qaGateWay.service.inte;
 
 import java.util.List;
 
+
 import com.crp.qa.qaGateWay.domain.dto.QaTreeDto;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeSimpleDto;
 import com.crp.qa.qaGateWay.util.exception.QaTreeException;
@@ -67,6 +68,7 @@ public interface QaTreeService {
 	 * @param title
 	 * @param page
 	 * @param size
+	 * @param isNeedRecord 是否需要记录此次查询
 	 * @return
 	 * @throws QaUserException
 	 */
@@ -107,11 +109,12 @@ public interface QaTreeService {
 	 * 根据title查找节点及其子节点
 	 * @author huangyue
 	 * @date 2018年6月1日 下午5:15:49
-	 * @param title
+	 * @param title 标题
+	 * @param isNeedRecord 是否是否需要记录这次查询条件（用于统计，如果是后台运维，请设为false）
 	 * @return
 	 * @throws QaTreeException
 	 */
-	public QaGenericBaseTransfer<QaTreeDto> findChildrenByTitle(String title) throws QaTreeException;
+	public QaGenericBaseTransfer<QaTreeDto> findChildrenByTitle(String title,Boolean isNeedRecord) throws QaTreeException;
 	
 	/**
 	 * 以rank值排序查找指定数量的节点
@@ -121,4 +124,7 @@ public interface QaTreeService {
 	 * @throws QaTreeException
 	 */
 	public QaGenericPagedTransfer<List<QaTreeSimpleDto>> findTopRank(Integer size) throws QaTreeException;
+
+	
+	public void searchRecord(String title) throws QaTreeException;
 }

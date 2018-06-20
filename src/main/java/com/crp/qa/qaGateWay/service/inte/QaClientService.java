@@ -9,7 +9,6 @@ import java.util.List;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeDto;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeSimpleDto;
 import com.crp.qa.qaGateWay.util.exception.QaClientException;
-import com.crp.qa.qaGateWay.util.transfer.QaBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericPagedTransfer;
 

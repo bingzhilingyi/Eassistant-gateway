@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeDto;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeSimpleDto;
 import com.crp.qa.qaGateWay.service.inte.QaClientService;
+import com.crp.qa.qaGateWay.service.inte.QaTreeService;
 import com.crp.qa.qaGateWay.util.exception.QaClientException;
+import com.crp.qa.qaGateWay.util.exception.QaTreeException;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericPagedTransfer;
 
@@ -32,12 +34,18 @@ public class QaClientController extends QaBaseController{
 	@Resource(name="qaClientService")
 	private QaClientService qaClientService;
 	
+	@Resource(name="qaTreeService")
+	private QaTreeService qaTreeService;
+	
 	@GetMapping(path="/findByTitle")
 	public QaGenericBaseTransfer<QaTreeDto> findByTitle(@RequestParam(value="title") String title) {
 		QaGenericBaseTransfer<QaTreeDto> dto = new QaGenericBaseTransfer<QaTreeDto>();
 		try {
+			//异步记录查询历史
+			qaTreeService.searchRecord(title);
+			//进行查询
 			dto = qaClientService.findByTitle(title);
-		} catch (QaClientException e) {
+		} catch (QaClientException | QaTreeException e ) {
 			returnError(e, dto);
 		}
 		return dto;

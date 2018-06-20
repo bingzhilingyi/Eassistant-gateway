@@ -45,10 +45,10 @@ public class QaTreeController extends QaBaseController{
 	private QaTreeService qaTreeService;
 	
 	@Value("${FILEPATH.UPLOAD}")
-    private String FILE_UPLOAD_PATH;
+    private String FILE_UPLOAD_PATH; //文件上传地址
 	
 	@Value("${FILEPATH.DOWNLOAD}")
-    private String FILE_DOWNLOAD_PATH;
+    private String FILE_DOWNLOAD_PATH; //文件下载地址
 	
 	/**
 	 * 查找所有root节点
