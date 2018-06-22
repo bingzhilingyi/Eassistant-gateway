@@ -35,9 +35,12 @@ public class QaClientServiceImpl extends QaBaseServiceImpl implements QaClientSe
 	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title) throws QaClientException{
 		QaGenericBaseTransfer<QaTreeDto> dto = new QaGenericBaseTransfer<QaTreeDto>();
 		try {
-			//精确查找,并记录这次查询历史
-			dto = qaTreeService.findChildrenByTitle(title,false);
-			//如果查询内容为空，说明精确查询无匹配，那么就模糊查
+			//如果无空格，精确查询
+			if(title.trim().indexOf(" ")==-1) {
+				//精确查找
+				dto = qaTreeService.findChildrenByTitle(title,false);
+			}
+			//如果查询内容为空，说明精确查询无匹配或没有进行精确查询，则进行模糊查询
 			if(dto.getContent()==null) {
 				//模糊查
 				QaGenericBaseTransfer<List<QaTreeSimpleDto>> dto2 = qaTreeService.findPagedByTitleLike(title, 0, 10);

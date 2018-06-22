@@ -19,6 +19,7 @@ import com.crp.qa.qaGateWay.service.inte.QaClientService;
 import com.crp.qa.qaGateWay.service.inte.QaTreeService;
 import com.crp.qa.qaGateWay.util.exception.QaClientException;
 import com.crp.qa.qaGateWay.util.exception.QaTreeException;
+import com.crp.qa.qaGateWay.util.transfer.QaBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericPagedTransfer;
 
@@ -57,6 +58,18 @@ public class QaClientController extends QaBaseController{
 		try {
 			dto = qaClientService.findTopRank(size);
 		} catch (QaClientException e) {
+			returnError(e, dto);
+		}
+		return dto;
+	}
+	
+	@GetMapping(path="/findRoot")
+	public QaBaseTransfer findRoot() {
+		//创建返回对象
+		QaBaseTransfer dto = new QaBaseTransfer();
+		try {
+			dto = qaTreeService.findRoot();
+		} catch (QaTreeException e) {
 			returnError(e, dto);
 		}
 		return dto;

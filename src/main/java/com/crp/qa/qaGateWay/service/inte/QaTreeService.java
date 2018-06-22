@@ -125,6 +125,12 @@ public interface QaTreeService {
 	 */
 	public QaGenericPagedTransfer<List<QaTreeSimpleDto>> findTopRank(Integer size) throws QaTreeException;
 
-	
+	/**
+	 * 把该查询条件记录进查询历史中
+	 * @param title
+	 * @throws QaTreeException
+	 * @Date 2018年6月21日
+	 * @author huangyue
+	 */
 	public void searchRecord(String title) throws QaTreeException;
 }
