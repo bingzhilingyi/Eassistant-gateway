@@ -38,6 +38,13 @@ public class QaClientController extends QaBaseController{
 	@Resource(name="qaTreeService")
 	private QaTreeService qaTreeService;
 	
+	/**
+	 * 根据标题查找
+	 * @param title
+	 * @return
+	 * @Date 2018年6月26日
+	 * @author huangyue
+	 */
 	@GetMapping(path="/findByTitle")
 	public QaGenericBaseTransfer<QaTreeDto> findByTitle(@RequestParam(value="title") String title) {
 		QaGenericBaseTransfer<QaTreeDto> dto = new QaGenericBaseTransfer<QaTreeDto>();
@@ -52,6 +59,13 @@ public class QaClientController extends QaBaseController{
 		return dto;
 	}
 
+	/**
+	 * 查找排名最高的
+	 * @param size
+	 * @return
+	 * @Date 2018年6月26日
+	 * @author huangyue
+	 */
 	@GetMapping(path="/findTopRank")
 	public QaGenericPagedTransfer<List<QaTreeSimpleDto>> findTopRank(@RequestParam(value="size") Integer size) {
 		QaGenericPagedTransfer<List<QaTreeSimpleDto>> dto = new QaGenericPagedTransfer<List<QaTreeSimpleDto>>();
@@ -63,6 +77,12 @@ public class QaClientController extends QaBaseController{
 		return dto;
 	}
 	
+	/**
+	 * 找到根节点
+	 * @return
+	 * @Date 2018年6月26日
+	 * @author huangyue
+	 */
 	@GetMapping(path="/findRoot")
 	public QaBaseTransfer findRoot() {
 		//创建返回对象

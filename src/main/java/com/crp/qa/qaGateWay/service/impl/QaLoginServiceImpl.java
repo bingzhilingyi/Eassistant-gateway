@@ -49,7 +49,10 @@ public class QaLoginServiceImpl extends QaBaseServiceImpl implements QaLoginServ
 		//如果登录成功，取到token存在自己的redis里，以后就通过自己的redis判断有无登录
 		if(dto.getStatus().equals("success")) {
 			String token = dto.getToken();
-			qaTokenService.setToken(token+"gateway","loged");
+			//如果token不为空，就放入redis里
+			if(token!=null&&!token.equals("")) {
+				qaTokenService.setToken(token+"gateway","loged");
+			}
 		}
 		//返回
 		return dto;

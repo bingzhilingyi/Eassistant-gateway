@@ -16,7 +16,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.crp.qa.qaGateWay.service.impl.QaBaseServiceImpl;
 import com.crp.qa.qaGateWay.service.impl.QaTreeServiceImpl;
+import com.crp.qa.qaGateWay.service.inte.QaGroupService;
 import com.crp.qa.qaGateWay.service.inte.QaTreeService;
+import com.crp.qa.qaGateWay.util.exception.QaGroupException;
+import com.crp.qa.qaGateWay.util.transfer.QaBaseTransfer;
+import com.crp.qa.qaGateWay.util.transfer.QaPagedTransfer;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -24,8 +28,8 @@ public class QaGateWayApplicationTests {
 	
 	final Logger LOGGER = LoggerFactory.getLogger(QaGateWayApplicationTests.class);
 	
-	@Resource(name="qaTreeService")
-	QaTreeService qaTreeService;
+	@Resource(name="qaGroupService")
+	QaGroupService qaGroupService;
 	
 	@Autowired
 	QaTreeServiceImpl qaTreeServiceImpl;
@@ -42,13 +46,13 @@ public class QaGateWayApplicationTests {
 	
 	@Test
 	public void test() {
-		System.out.println("main");
-//		try {
-//			//Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		//LOGGER.info("main");
+		try {
+			QaPagedTransfer pg = qaGroupService.findByGroupNameLike("系统管理1",0,11);
+			System.out.println(pg.getContent());
+			System.out.println(pg.getStatus());
+		} catch (QaGroupException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

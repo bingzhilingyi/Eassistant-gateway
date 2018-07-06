@@ -8,6 +8,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+/**
+ * spring异步执行的配置文件
+ * @author huangyue
+ * @Date 2018年6月27日
+ * @author huangyue
+ */
 @Configuration  
 @EnableAsync  
 public class SpringAsyncConfig { 
