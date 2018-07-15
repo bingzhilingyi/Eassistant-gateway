@@ -31,4 +31,16 @@ public class QaErrorController {
 		QaBaseTransfer dto = new QaBaseTransfer("failed","token错误或已过期！");
 		return dto;
 	}
+	
+	/**
+	 * 当无权限发起请求的处理方法
+	 * @return
+	 * @Date 2018年7月15日
+	 * @author huangyue
+	 */
+	@RequestMapping(path="/noRight")
+	public QaBaseTransfer noRight() {
+		QaBaseTransfer dto = new QaBaseTransfer("failed","抱歉，您无权进行该操作");
+		return dto;
+	}
 }

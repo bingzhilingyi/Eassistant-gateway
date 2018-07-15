@@ -6,8 +6,8 @@ package com.crp.qa.qaGateWay.controller;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,15 +52,14 @@ public class QaLoginController extends QaBaseController{
 		return dto;
 	}
 	
-	/**
-	 * 当token验证错误时的处理方法
-	 * @author huangyue
-	 * @date 2018年5月29日 上午10:26:47
-	 * @return
-	 */
-	@RequestMapping(path="/error")
-	public QaBaseTransfer noToken() {
-		QaBaseTransfer dto = new QaBaseTransfer("failed","token错误或已过期！");
+	@GetMapping(path="/findByToken")
+	public QaBaseTransfer findByToken(@RequestParam(value="token") String token) {
+		QaBaseTransfer dto = new QaBaseTransfer();
+		try {
+			dto = qaLoginService.findByToken(token);
+		} catch (QaLoginException e) {
+			this.returnError(e, dto);
+		}
 		return dto;
 	}
 }

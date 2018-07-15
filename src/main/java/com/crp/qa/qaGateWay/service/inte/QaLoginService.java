@@ -4,6 +4,8 @@
  */
 package com.crp.qa.qaGateWay.service.inte;
 
+import java.util.Set;
+
 import com.crp.qa.qaGateWay.util.exception.QaLoginException;
 import com.crp.qa.qaGateWay.util.transfer.QaBaseTransfer;
 
@@ -35,4 +37,15 @@ public interface QaLoginService {
 	 * @throws QaLoginException
 	 */
 	public boolean isLogin(String logingToken) throws QaLoginException;
+
+	
+	/**
+	 * 根据token获取当前用户信息
+	 * @param token
+	 * @return
+	 * @throws QaLoginException
+	 * @Date 2018年7月11日
+	 * @author huangyue
+	 */
+	public QaBaseTransfer findByToken(String token) throws QaLoginException;
 }

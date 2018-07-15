@@ -47,9 +47,8 @@ public class QaGateWayApplicationTests {
 	@Test
 	public void test() {
 		try {
-			QaPagedTransfer pg = qaGroupService.findByGroupNameLike("系统管理1",0,11);
-			System.out.println(pg.getContent());
-			System.out.println(pg.getStatus());
+			QaBaseTransfer pg = qaGroupService.findById(11);
+			qaGroupService.update(pg.getContent().toString());
 		} catch (QaGroupException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

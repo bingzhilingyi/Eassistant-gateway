@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.crp.qa.qaGateWay.service.inte.QaTokenService;
@@ -30,12 +31,15 @@ import com.crp.qa.qaGateWay.service.inte.QaTokenService;
  * @ClassName LoginFilter
  */
 @Component
+@Order(1)
 @WebFilter(urlPatterns = "/*",filterName = "loginFilter")
 public class LoginFilter implements Filter{
 	private final Logger LOGGER = LoggerFactory.getLogger(LoginFilter.class);
 	
 	@Value("${TOKEN.CLIENT}")
 	private String CLIENT_TOKEN;
+	@Value("${TOKEN.INTERNAL}")
+	private String INTERNAL_TOKEN;
 	
 	@Resource(name="qaTokenService")
 	private QaTokenService qaTokenService;
@@ -59,7 +63,7 @@ public class LoginFilter implements Filter{
 		servletResponse.setHeader("Access-Control-Max-Age", "3600"); //缓存过期时间
 		//获取session，如果session不存在，则会创建
 		//HttpSession session = servletRequest.getSession(true);
-		LOGGER.info("excute start time...");
+		LOGGER.info("loginFilter excute start time...");
 		try{
 			// 获得用户请求的URI
 			String path = servletRequest.getRequestURI();
@@ -84,8 +88,8 @@ public class LoginFilter implements Filter{
 					return;
 				}
 			}
-			//如果没有token，token不匹配，则返回错误
-			if(token==null||!qaTokenService.isExists(token)) {
+			//如果没有token，或token不匹配，则返回错误
+			if(token==null||( !INTERNAL_TOKEN.equals(token) && !qaTokenService.isExists(token+"gateway"))) {
 				servletResponse.sendRedirect(basepath + "/error/notoken");
 				return;
 			}

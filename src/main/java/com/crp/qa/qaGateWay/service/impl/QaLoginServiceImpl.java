@@ -37,21 +37,26 @@ public class QaLoginServiceImpl extends QaBaseServiceImpl implements QaLoginServ
 		if(StringUtils.isNullOrEmpty(account)||StringUtils.isNullOrEmpty(password)) {
 			throw new QaLoginException("用户名或密码为空！");
 		}
+		
 		//服务地址
 		String url = URL_AUTHORIZATION+"/Login/login";
+		
 		//获取参数集合
 		MultiValueMap<String,String> variables= this.getMultiValueMap("AUTHORIZATION");
 		variables.add("account", account);
 		variables.add("password", password);
+		
 		//post数据去登录，会返回一个带状态的对象
 		JSONObject json = restTemplate.postForEntity(url, variables,JSONObject.class).getBody();
 		QaBaseTransfer dto = json.toJavaObject(QaBaseTransfer.class);
+		
 		//如果登录成功，取到token存在自己的redis里，以后就通过自己的redis判断有无登录
 		if(dto.getStatus().equals("success")) {
-			String token = dto.getToken();
+			String token = dto.getToken(); //返回的token
+			Object content = dto.getContent(); //返回的具体信息
 			//如果token不为空，就放入redis里
 			if(token!=null&&!token.equals("")) {
-				qaTokenService.setToken(token+"gateway","loged");
+				qaTokenService.setToken(token+"gateway",content);
 			}
 		}
 		//返回
@@ -73,6 +78,23 @@ public class QaLoginServiceImpl extends QaBaseServiceImpl implements QaLoginServ
 		QaBaseTransfer dto = json.toJavaObject(QaBaseTransfer.class);
 		//如果返回success，则说明已经登录
 		return dto.getStatus().equals("success");
+	}
+
+	@Override
+	public QaBaseTransfer findByToken(String logingToken) throws QaLoginException {
+		if(StringUtils.isNullOrEmpty(logingToken)) {
+			throw new QaLoginException("token为空！");
+		}
+		//服务地址
+		String url = URL_AUTHORIZATION+"/Login/findByToken?token={token}&logingToken={logingToken}";
+		//获取参数集合
+		Map<String,String> variables= this.getParamMap("AUTHORIZATION");
+		variables.put("logingToken", logingToken);
+		//post数据去登录，会返回一个带状态的对象
+		JSONObject json = restTemplate.getForEntity(url,JSONObject.class, variables).getBody();
+		QaBaseTransfer dto = json.toJavaObject(QaBaseTransfer.class);
+		//如果返回success，则说明已经登录
+		return dto;
 	}
 
 }

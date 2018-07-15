@@ -81,7 +81,7 @@ public interface QaUserService {
 	 * @return
 	 * @throws QaUserException
 	 */
-	public QaPagedTransfer findPagedByAccountOrName(String account,Integer page,Integer size,Boolean isSlice) throws QaUserException;
+	public QaPagedTransfer findPagedByAccountOrName(String account,Integer page,Integer size,String searchType) throws QaUserException;
 	
 	/**
 	 * 保存传入的对象并返回保存后的对象

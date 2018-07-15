@@ -101,7 +101,7 @@ public class QaUserServiceImpl extends QaBaseServiceImpl implements QaUserServic
 	}
 
 	@Override
-	public QaPagedTransfer findPagedByAccountOrName(String account, Integer page, Integer size, Boolean isSlice) throws QaUserException {
+	public QaPagedTransfer findPagedByAccountOrName(String account, Integer page, Integer size, String searchType) throws QaUserException {
 		//如果传入account为空，直接查全部		
 		if(account==null||account.equals("")) {
 			return this.findPagedAll(page, size);
@@ -110,13 +110,13 @@ public class QaUserServiceImpl extends QaBaseServiceImpl implements QaUserServic
 		page = page==null?1:page;
 		size = size==null?20:size;
 		//服务地址
-		String url = URL_AUTHORIZATION+"/user/findPagedByAccountOrName?token={token}&account={account}&page={page}&size={size}&isSlice={isSlice}";
+		String url = URL_AUTHORIZATION+"/user/findPagedByAccountOrName?token={token}&account={account}&page={page}&size={size}&searchType={searchType}";
 		//获取参数集合
 		Map<String, String> variables= this.getParamMap("AUTHORIZATION");
 		variables.put("account", account);
 		variables.put("page", page.toString());
 		variables.put("size", size.toString());
-		variables.put("isSlice", isSlice.toString());
+		variables.put("searchType", searchType);
 		//post数据去登录，会返回一个带状态的对象
 		JSONObject json = restTemplate.getForEntity(url,JSONObject.class, variables).getBody();
 		QaPagedTransfer dto = json.toJavaObject(QaPagedTransfer.class);

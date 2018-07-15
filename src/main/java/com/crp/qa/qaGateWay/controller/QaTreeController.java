@@ -5,7 +5,6 @@
 package com.crp.qa.qaGateWay.controller;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,7 +55,7 @@ public class QaTreeController extends QaBaseController{
 	 * @date 2018年6月1日 上午9:12:57
 	 * @return
 	 */
-	@GetMapping(path="/getRoot")
+	@GetMapping(path="/findRoot")
 	public QaBaseTransfer findRoot() {
 		//创建返回对象
 		QaBaseTransfer dto = new QaBaseTransfer();
@@ -75,7 +74,7 @@ public class QaTreeController extends QaBaseController{
 	 * @param parentId
 	 * @return
 	 */
-	@GetMapping(path="/getByParentId/{parentId}")
+	@GetMapping(path="/findByParentId/{parentId}")
 	public QaBaseTransfer findByParentId(@PathVariable(value="parentId") Integer parentId) {
 		//创建返回对象
 		QaBaseTransfer dto = new QaBaseTransfer();
@@ -94,7 +93,7 @@ public class QaTreeController extends QaBaseController{
 	 * @param id
 	 * @return
 	 */
-	@GetMapping(path="/getById/{Id}")
+	@GetMapping(path="/findById/{Id}")
 	public QaBaseTransfer findById(@PathVariable(value="Id") Integer id) {
 		//创建返回对象
 		QaBaseTransfer dto = new QaBaseTransfer();
@@ -114,7 +113,7 @@ public class QaTreeController extends QaBaseController{
 	 * @param title
 	 * @return
 	 */
-	@GetMapping(path="/getByTitle")
+	@GetMapping(path="/findByTitle")
 	public QaBaseTransfer findByTitle(@RequestParam(value="title") String title) {
 		//创建返回对象
 		QaBaseTransfer dto = new QaBaseTransfer();
@@ -136,7 +135,7 @@ public class QaTreeController extends QaBaseController{
 	 * @param size
 	 * @return
 	 */
-	@GetMapping(path="/getPagedByTitleLike")
+	@GetMapping(path="/findPagedByTitleLike")
 	public QaGenericPagedTransfer<List<QaTreeSimpleDto>> findByTitleLike(
 			@RequestParam(value="title") String title,
 			@RequestParam(value="page") Integer page,
@@ -187,7 +186,7 @@ public class QaTreeController extends QaBaseController{
 			dto = qaTreeService.update(node);
 		} catch (QaTreeException e) {
 			returnError(e, dto);
-		}
+		} 
 		return dto;
 	}
 	

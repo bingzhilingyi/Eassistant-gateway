@@ -78,7 +78,7 @@ public class QaUserController extends QaBaseController{
 	 * @param id
 	 * @return
 	 */
-	@GetMapping(path="/get/{id}")
+	@GetMapping(path="/find/{id}")
 	public QaBaseTransfer get(@PathVariable(value="id") Integer id) {
 		//创建返回对象
 		QaBaseTransfer dto = new QaBaseTransfer();
@@ -126,11 +126,11 @@ public class QaUserController extends QaBaseController{
 			@RequestParam(value="account") String account,
 			@RequestParam(value="page",defaultValue="0") Integer page,
 			@RequestParam(value="size",defaultValue="10") Integer size,
-			@RequestParam(value="isSlice",defaultValue="false") Boolean isSlice){
+			@RequestParam(value="searchType",defaultValue="account") String searchType){
 		//创建返回对象
 		QaPagedTransfer dto = new QaPagedTransfer();
 		try {
-			dto = qaUserService.findPagedByAccountOrName(account, page, size, isSlice);
+			dto = qaUserService.findPagedByAccountOrName(account, page, size, searchType);
 		} catch (QaUserException e) {
 			returnError(e,dto);
 		}

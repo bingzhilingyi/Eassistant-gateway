@@ -16,7 +16,6 @@ import com.crp.qa.qaGateWay.util.transfer.QaBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaPagedTransfer;
 
 @Service(value="qaGroupService")
-@Transactional
 public class QaGroupServiceImpl extends QaBaseServiceImpl implements QaGroupService {
 
 	@Override
