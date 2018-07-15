@@ -11,13 +11,13 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.crp.qa.qaGateWay.service.inte.QaLoginService;
 import com.crp.qa.qaGateWay.service.inte.QaTokenService;
 import com.crp.qa.qaGateWay.util.exception.QaLoginException;
 import com.crp.qa.qaGateWay.util.transfer.QaBaseTransfer;
-import com.mysql.jdbc.StringUtils;
 
 /**
  * 登录服务
@@ -34,7 +34,7 @@ public class QaLoginServiceImpl extends QaBaseServiceImpl implements QaLoginServ
 
 	@Override
 	public QaBaseTransfer login(String account,String password) throws QaLoginException{
-		if(StringUtils.isNullOrEmpty(account)||StringUtils.isNullOrEmpty(password)) {
+		if(StringUtils.isEmpty(account)||StringUtils.isEmpty(password)) {
 			throw new QaLoginException("用户名或密码为空！");
 		}
 		
@@ -65,7 +65,7 @@ public class QaLoginServiceImpl extends QaBaseServiceImpl implements QaLoginServ
 
 	@Override
 	public boolean isLogin(String logingToken) throws QaLoginException {
-		if(StringUtils.isNullOrEmpty(logingToken)) {
+		if(StringUtils.isEmpty(logingToken)) {
 			throw new QaLoginException("token为空！");
 		}
 		//服务地址
@@ -82,7 +82,7 @@ public class QaLoginServiceImpl extends QaBaseServiceImpl implements QaLoginServ
 
 	@Override
 	public QaBaseTransfer findByToken(String logingToken) throws QaLoginException {
-		if(StringUtils.isNullOrEmpty(logingToken)) {
+		if(StringUtils.isEmpty(logingToken)) {
 			throw new QaLoginException("token为空！");
 		}
 		//服务地址
