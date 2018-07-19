@@ -1,5 +1,6 @@
 package com.crp.qa.qaGateWay.service.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.transaction.Transactional;
@@ -7,6 +8,7 @@ import javax.transaction.Transactional;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 
 import com.alibaba.fastjson.JSONObject;
 import com.crp.qa.qaGateWay.service.inte.QaGroupService;
@@ -14,6 +16,7 @@ import com.crp.qa.qaGateWay.util.exception.QaGroupException;
 import com.crp.qa.qaGateWay.util.exception.QaUserException;
 import com.crp.qa.qaGateWay.util.transfer.QaBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaPagedTransfer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Service(value="qaGroupService")
 public class QaGroupServiceImpl extends QaBaseServiceImpl implements QaGroupService {
@@ -98,9 +101,16 @@ public class QaGroupServiceImpl extends QaBaseServiceImpl implements QaGroupServ
 			throw new QaGroupException("传入对象无主键，删除失败！");
 		}
 		String url = URL_AUTHORIZATION+"/group/delete?token="+TOKEN_AUTHORIZATION;
-		Map<String,String> variables= this.getParamMap("AUTHORIZATION");
-		variables.put("id", id.toString());
-		JSONObject json = this.exchange(url, HttpMethod.DELETE, JSONObject.class,variables);
+		Map<String,String> uriVariables= this.getParamMap("AUTHORIZATION");
+		uriVariables.put("id", id.toString());
+		JSONObject json;
+		try {
+			json = this.exchange(url, HttpMethod.DELETE, JSONObject.class,null,uriVariables);
+		} catch (JsonProcessingException e) {
+			throw new QaGroupException("创建请求体 HttpEntity 失败！");
+		} catch(RestClientException e){
+			throw new QaGroupException(new StringBuilder("调用服务失败：").append(url).toString());
+		}
 		QaBaseTransfer dto = json.toJavaObject(QaBaseTransfer.class);
 		return dto;
 	}
@@ -111,9 +121,17 @@ public class QaGroupServiceImpl extends QaBaseServiceImpl implements QaGroupServ
 			throw new QaGroupException("传入对象为空，更新失败！");
 		}
 		String url = URL_AUTHORIZATION+"/group/update?token="+TOKEN_AUTHORIZATION;
-		Map<String,String> variables= this.getParamMap("AUTHORIZATION");
-		variables.put("group", group);
-		JSONObject json = this.exchange(url, HttpMethod.PUT, JSONObject.class,variables);
+		Map<String,String> uriVariables= this.getParamMap("AUTHORIZATION");
+		Map<String,String> bodyVariables= new HashMap<String,String>();
+		bodyVariables.put("group", group);
+		JSONObject json;
+		try {
+			json = this.exchange(url, HttpMethod.PUT, JSONObject.class,bodyVariables,uriVariables);
+		} catch (JsonProcessingException e) {
+			throw new QaGroupException("创建请求体 HttpEntity 失败！");
+		} catch(RestClientException e){
+			throw new QaGroupException(new StringBuilder("调用服务失败：").append(url).toString());
+		}
 		QaBaseTransfer dto = json.toJavaObject(QaBaseTransfer.class);
 		return dto;
 	}

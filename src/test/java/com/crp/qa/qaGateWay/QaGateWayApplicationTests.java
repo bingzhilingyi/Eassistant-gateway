@@ -46,12 +46,5 @@ public class QaGateWayApplicationTests {
 	
 	@Test
 	public void test() {
-		try {
-			QaBaseTransfer pg = qaGroupService.findById(11);
-			qaGroupService.update(pg.getContent().toString());
-		} catch (QaGroupException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }

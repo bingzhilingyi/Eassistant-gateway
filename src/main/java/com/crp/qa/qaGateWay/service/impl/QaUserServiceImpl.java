@@ -4,6 +4,7 @@
  */
 package com.crp.qa.qaGateWay.service.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.transaction.Transactional;
@@ -11,12 +12,14 @@ import javax.transaction.Transactional;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 
 import com.alibaba.fastjson.JSONObject;
 import com.crp.qa.qaGateWay.service.inte.QaUserService;
 import com.crp.qa.qaGateWay.util.exception.QaUserException;
 import com.crp.qa.qaGateWay.util.transfer.QaBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaPagedTransfer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * 有关用户的服务
@@ -146,10 +149,17 @@ public class QaUserServiceImpl extends QaBaseServiceImpl implements QaUserServic
 		if(id==null) {
 			throw new QaUserException("传入对象无主键，删除失败！");
 		}
-		String url = URL_AUTHORIZATION+"/user/delete?token="+TOKEN_AUTHORIZATION;
-		Map<String,String> variables= this.getParamMap("AUTHORIZATION");
-		variables.put("id", id.toString());
-		JSONObject json = this.exchange(url, HttpMethod.DELETE, JSONObject.class,variables);
+		String url = URL_AUTHORIZATION+"/user/delete?token={token}";
+		Map<String,String> uriVariables= this.getParamMap("AUTHORIZATION");
+		uriVariables.put("id", id.toString());
+		JSONObject json;
+		try {
+			json = this.exchange(url, HttpMethod.DELETE, JSONObject.class,null,uriVariables);
+		} catch (JsonProcessingException e) {
+			throw new QaUserException("创建请求体 HttpEntity 失败！");
+		} catch(RestClientException e){
+			throw new QaUserException(new StringBuilder("调用服务失败：").append(url).toString());
+		}
 		QaBaseTransfer dto = json.toJavaObject(QaBaseTransfer.class);
 		return dto;
 	}
@@ -159,10 +169,18 @@ public class QaUserServiceImpl extends QaBaseServiceImpl implements QaUserServic
 		if(user==null) {
 			throw new QaUserException("传入对象为空，更新失败！");
 		}
-		String url = URL_AUTHORIZATION+"/user/update?token="+TOKEN_AUTHORIZATION;
-		Map<String,String> variables= this.getParamMap("AUTHORIZATION");
-		variables.put("user", user);
-		JSONObject json = this.exchange(url, HttpMethod.PUT, JSONObject.class,variables);
+		String url = URL_AUTHORIZATION+"/user/update?token={token}";
+		Map<String,String> uriVariables= this.getParamMap("AUTHORIZATION");
+		Map<String,String> bodyVariables= new HashMap<String,String>();
+		bodyVariables.put("user", user);
+		JSONObject json;
+		try {
+			json = this.exchange(url, HttpMethod.PUT, JSONObject.class,bodyVariables,uriVariables);
+		} catch (JsonProcessingException e) {
+			throw new QaUserException("创建请求体 HttpEntity 失败！");
+		} catch(RestClientException e){
+			throw new QaUserException(new StringBuilder("调用服务失败：").append(url).toString());
+		}
 		QaBaseTransfer dto = json.toJavaObject(QaBaseTransfer.class);
 		return dto;
 	}

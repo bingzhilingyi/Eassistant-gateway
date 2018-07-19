@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,6 +22,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.crp.qa.qaGateWay.service.inte.QaBaseService;
@@ -81,36 +83,74 @@ public class QaBaseServiceImpl implements QaBaseService{
 	}
 	
 	/**
-	 * exchange方法可以执行任何操作（get,post,delete,put），用它来执行delete命令，可以获取返回值
+	 * 发送restful请求
+	 * @param url 服务路径
+	 * @param method 请求方法
+	 * @param bodyType 返回的数据类型
+	 * @param bodyVariables  放在body里的数据
+	 * @param uriVariables 放在uri里的数据
+	 * @return 
+	 * @throws JsonProcessingException
+	 * @throws RestClientException
+	 * @Date 2018年7月18日
 	 * @author huangyue
-	 * @date 2018年5月31日 下午3:12:51
-	 * @param url
-	 * @param method
-	 * @param bodyType
-	 * @param params
-	 * @return
 	 */
-	public <T> T exchange(String url, HttpMethod method, Class<T> bodyType,Map<String,String> params) {
-        // 请求头
+	public <T> T exchange(String url, HttpMethod method, @SuppressWarnings("rawtypes") ParameterizedTypeReference bodyType,Map<String,?> bodyVariables,Map<String,String> uriVariables ) 
+			throws JsonProcessingException,RestClientException{
+        
+		HttpEntity<String> entity = getHttpEntity(bodyVariables);
+              
+		@SuppressWarnings("unchecked")
+		ResponseEntity<T> resultEntity = restTemplate.exchange(url, method, entity, bodyType,uriVariables);
+        return resultEntity.getBody();
+    }
+	
+	/**
+	 * 发送restful请求
+	 * @param url 服务路径
+	 * @param method 请求方法
+	 * @param bodyType 返回的数据类型
+	 * @param bodyVariables 放在body里的数据
+	 * @param uriVariables 放在uri里的数据
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws RestClientException
+	 * @Date 2018年7月18日
+	 * @author huangyue
+	 */
+	public <T> T exchange(String url, HttpMethod method, Class<T> bodyType,Map<String,String> bodyVariables,Map<String,String> uriVariables ) 
+				throws JsonProcessingException,RestClientException{
+		
+		HttpEntity<String> entity = getHttpEntity(bodyVariables);
+		
+		ResponseEntity<T> resultEntity = restTemplate.exchange(url, method, entity, bodyType,uriVariables);
+        return resultEntity.getBody();
+	}
+	
+	/**
+	 * 包装数组为HttpEntity
+	 * @param bodyVariables Map类型数组
+	 * @return
+	 * @throws JsonProcessingException
+	 * @Date 2018年7月18日
+	 * @author huangyue
+	 */
+	private HttpEntity<String> getHttpEntity(Map<String,?> bodyVariables) throws JsonProcessingException {
+		// 请求头
         HttpHeaders headers = new HttpHeaders();
         MimeType mimeType = MimeTypeUtils.parseMimeType("application/json");
         MediaType mediaType = new MediaType(mimeType.getType(), mimeType.getSubtype(), Charset.forName("UTF-8"));
-        // 请求体
         headers.setContentType(mediaType);
+        
         //提供json转化功能
         ObjectMapper mapper = new ObjectMapper();
         String str = null;
-        try {
-            if (!params.isEmpty()) {
-                str = mapper.writeValueAsString(params);
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        if (bodyVariables!=null && !bodyVariables.isEmpty()) {
+            str = mapper.writeValueAsString(bodyVariables);
         }
-        // 发送请求
+        // 请求体
         HttpEntity<String> entity = new HttpEntity<>(str, headers);
-        ResponseEntity<T> resultEntity = restTemplate.exchange(url, method, entity, bodyType);
-        return resultEntity.getBody();
-    }
+        return entity;
+	}
 
 }

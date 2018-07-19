@@ -23,11 +23,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.crp.qa.qaGateWay.domain.dto.QaTreeDto;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeSimpleDto;
 import com.crp.qa.qaGateWay.service.inte.QaTreeService;
 import com.crp.qa.qaGateWay.util.exception.QaTreeException;
 import com.crp.qa.qaGateWay.util.file.FileUtil;
 import com.crp.qa.qaGateWay.util.transfer.QaBaseTransfer;
+import com.crp.qa.qaGateWay.util.transfer.QaGenericBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericPagedTransfer;
 
 /**
@@ -94,9 +96,9 @@ public class QaTreeController extends QaBaseController{
 	 * @return
 	 */
 	@GetMapping(path="/findById/{Id}")
-	public QaBaseTransfer findById(@PathVariable(value="Id") Integer id) {
+	public QaGenericBaseTransfer<QaTreeDto> findById(@PathVariable(value="Id") Integer id) {
 		//创建返回对象
-		QaBaseTransfer dto = new QaBaseTransfer();
+		QaGenericBaseTransfer<QaTreeDto> dto = new QaGenericBaseTransfer<QaTreeDto>();
 		try {
 			dto = qaTreeService.findById(id);
 		} catch (QaTreeException e) {
@@ -114,9 +116,9 @@ public class QaTreeController extends QaBaseController{
 	 * @return
 	 */
 	@GetMapping(path="/findByTitle")
-	public QaBaseTransfer findByTitle(@RequestParam(value="title") String title) {
+	public QaGenericBaseTransfer<QaTreeDto> findByTitle(@RequestParam(value="title") String title) {
 		//创建返回对象
-		QaBaseTransfer dto = new QaBaseTransfer();
+		QaGenericBaseTransfer<QaTreeDto> dto = new QaGenericBaseTransfer<QaTreeDto>();
 		try {
 			dto = qaTreeService.findByTitle(title);
 		} catch (QaTreeException e) {
@@ -136,12 +138,12 @@ public class QaTreeController extends QaBaseController{
 	 * @return
 	 */
 	@GetMapping(path="/findPagedByTitleLike")
-	public QaGenericPagedTransfer<List<QaTreeSimpleDto>> findByTitleLike(
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findByTitleLike(
 			@RequestParam(value="title") String title,
 			@RequestParam(value="page") Integer page,
 			@RequestParam(value="size") Integer size) {
 		//创建返回对象
-		QaGenericPagedTransfer<List<QaTreeSimpleDto>> dto = new QaGenericPagedTransfer<List<QaTreeSimpleDto>>();
+		QaGenericPagedTransfer<QaTreeSimpleDto> dto = new QaGenericPagedTransfer<QaTreeSimpleDto>();
 		try {
 			dto = qaTreeService.findPagedByTitleLike(title, page, size);
 		} catch (QaTreeException e) {

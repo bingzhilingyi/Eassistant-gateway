@@ -39,5 +39,5 @@ public interface QaClientService {
 	 * @return
 	 * @throws QaClientException
 	 */
-	public QaGenericPagedTransfer<List<QaTreeSimpleDto>> findTopRank(Integer size) throws QaClientException;
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(Integer size) throws QaClientException;
 }

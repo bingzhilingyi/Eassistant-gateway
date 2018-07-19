@@ -21,6 +21,7 @@ public class QaGenericBaseTransfer<T> implements Serializable{
 	private String message; //返回的信息
 	private String token; //token
 	private T content; //传输的内容
+	private QaClientStage stage;
 	public String getStatus() {
 		return status;
 	}
@@ -45,6 +46,11 @@ public class QaGenericBaseTransfer<T> implements Serializable{
 	public void setContent(T content) {
 		this.content = content;
 	}
-	
+	public QaClientStage getStage() {
+		return stage;
+	}
+	public void setStage(QaClientStage stage) {
+		this.stage = stage;
+	}
 	
 }

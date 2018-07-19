@@ -67,8 +67,8 @@ public class QaClientController extends QaBaseController{
 	 * @author huangyue
 	 */
 	@GetMapping(path="/findTopRank")
-	public QaGenericPagedTransfer<List<QaTreeSimpleDto>> findTopRank(@RequestParam(value="size") Integer size) {
-		QaGenericPagedTransfer<List<QaTreeSimpleDto>> dto = new QaGenericPagedTransfer<List<QaTreeSimpleDto>>();
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(@RequestParam(value="size") Integer size) {
+		QaGenericPagedTransfer<QaTreeSimpleDto> dto = new QaGenericPagedTransfer<QaTreeSimpleDto>();
 		try {
 			dto = qaClientService.findTopRank(size);
 		} catch (QaClientException e) {

@@ -13,6 +13,7 @@ import com.crp.qa.qaGateWay.domain.dto.QaTreeSimpleDto;
 import com.crp.qa.qaGateWay.util.exception.QaTreeException;
 import com.crp.qa.qaGateWay.util.transfer.QaBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericBaseTransfer;
+import com.crp.qa.qaGateWay.util.transfer.QaGenericListTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericPagedTransfer;
 
 /**
@@ -29,7 +30,7 @@ public interface QaTreeService {
 	 * @return
 	 * @throws QaUserException
 	 */
-	public QaBaseTransfer findRoot() throws QaTreeException;
+	public QaGenericListTransfer<QaTreeSimpleDto> findRoot() throws QaTreeException;
 	
 	/**
 	 * 根据父级节点查找子集
@@ -39,7 +40,7 @@ public interface QaTreeService {
 	 * @return
 	 * @throws QaUserException
 	 */
-	public QaBaseTransfer findByParentId(Integer parentId) throws QaTreeException;
+	public QaGenericListTransfer<QaTreeSimpleDto> findByParentId(Integer parentId) throws QaTreeException;
 		
 	/**
 	 * 根据id查找节点
@@ -49,7 +50,7 @@ public interface QaTreeService {
 	 * @return
 	 * @throws QaUserException
 	 */
-	public QaBaseTransfer findById(Integer id) throws QaTreeException;
+	public QaGenericBaseTransfer<QaTreeDto> findById(Integer id) throws QaTreeException;
 	
 	/**
 	 * 根据title精确查找节点
@@ -59,7 +60,7 @@ public interface QaTreeService {
 	 * @return
 	 * @throws QaUserException
 	 */
-	public QaBaseTransfer findByTitle(String title) throws QaTreeException;
+	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title) throws QaTreeException;
 	
 	/**
 	 * 根据title模糊分页查找节点
@@ -72,7 +73,7 @@ public interface QaTreeService {
 	 * @return
 	 * @throws QaUserException
 	 */
-	public QaGenericPagedTransfer<List<QaTreeSimpleDto>> findPagedByTitleLike(String title,Integer page,Integer size) throws QaTreeException;
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findPagedByTitleLike(String title,Integer page,Integer size) throws QaTreeException;
 	
 	/**
 	 * 新增节点
@@ -114,7 +115,27 @@ public interface QaTreeService {
 	 * @return
 	 * @throws QaTreeException
 	 */
-	public QaGenericBaseTransfer<QaTreeDto> findChildrenByTitle(String title,Boolean isNeedRecord) throws QaTreeException;
+	public QaGenericBaseTransfer<QaTreeDto> findChildrenByTitle(String title) throws QaTreeException;
+	
+	/**
+	 * 根据keyword所有可能的节点
+	 * @param keyword
+	 * @return
+	 * @throws QaTreeException
+	 * @Date 2018年7月17日
+	 * @author huangyue
+	 */
+	public QaGenericListTransfer<QaTreeSimpleDto> findByTitleOrKeyword(String keyword) throws QaTreeException;
+	
+	/**
+	 * 根据keyword所有可能的分页节点
+	 * @param keyword
+	 * @return
+	 * @throws QaTreeException
+	 * @Date 2018年7月17日
+	 * @author huangyue
+	 */
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findPagedByTitleOrKeyword(String keyword,Integer page,Integer size) throws QaTreeException;
 	
 	/**
 	 * 以rank值排序查找指定数量的节点
@@ -123,7 +144,7 @@ public interface QaTreeService {
 	 * @return
 	 * @throws QaTreeException
 	 */
-	public QaGenericPagedTransfer<List<QaTreeSimpleDto>> findTopRank(Integer size) throws QaTreeException;
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(Integer size) throws QaTreeException;
 
 	/**
 	 * 把该查询条件记录进查询历史中

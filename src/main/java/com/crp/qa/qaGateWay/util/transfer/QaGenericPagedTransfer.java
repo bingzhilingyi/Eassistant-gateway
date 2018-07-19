@@ -9,7 +9,7 @@ package com.crp.qa.qaGateWay.util.transfer;
  * @date 2018年6月4日 上午9:44:38
  * @ClassName QaGenericPagedTransfer
  */
-public class QaGenericPagedTransfer<T> extends QaGenericBaseTransfer<T>{
+public class QaGenericPagedTransfer<T> extends QaGenericListTransfer<T>{
 	
 	/**
 	 * 
