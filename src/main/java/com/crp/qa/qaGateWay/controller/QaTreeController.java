@@ -4,6 +4,7 @@
  */
 package com.crp.qa.qaGateWay.controller;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeDto;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeSimpleDto;
 import com.crp.qa.qaGateWay.service.inte.QaTreeService;
-import com.crp.qa.qaGateWay.util.exception.QaTreeException;
 import com.crp.qa.qaGateWay.util.file.FileUtil;
 import com.crp.qa.qaGateWay.util.transfer.QaBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericBaseTransfer;
@@ -63,7 +63,7 @@ public class QaTreeController extends QaBaseController{
 		QaBaseTransfer dto = new QaBaseTransfer();
 		try {
 			dto = qaTreeService.findRoot();
-		} catch (QaTreeException e) {
+		} catch (Exception e) {
 			returnError(e, dto);
 		}
 		return dto;
@@ -82,7 +82,7 @@ public class QaTreeController extends QaBaseController{
 		QaBaseTransfer dto = new QaBaseTransfer();
 		try {
 			dto = qaTreeService.findByParentId(parentId);
-		} catch (QaTreeException e) {
+		} catch (Exception e) {
 			returnError(e, dto);
 		}
 		return dto;
@@ -101,7 +101,7 @@ public class QaTreeController extends QaBaseController{
 		QaGenericBaseTransfer<QaTreeDto> dto = new QaGenericBaseTransfer<QaTreeDto>();
 		try {
 			dto = qaTreeService.findById(id);
-		} catch (QaTreeException e) {
+		} catch (Exception e) {
 			returnError(e, dto);
 		}
 		return dto;
@@ -121,7 +121,7 @@ public class QaTreeController extends QaBaseController{
 		QaGenericBaseTransfer<QaTreeDto> dto = new QaGenericBaseTransfer<QaTreeDto>();
 		try {
 			dto = qaTreeService.findByTitle(title);
-		} catch (QaTreeException e) {
+		} catch (Exception e) {
 			returnError(e, dto);
 		}
 		return dto;
@@ -146,7 +146,7 @@ public class QaTreeController extends QaBaseController{
 		QaGenericPagedTransfer<QaTreeSimpleDto> dto = new QaGenericPagedTransfer<QaTreeSimpleDto>();
 		try {
 			dto = qaTreeService.findPagedByTitleLike(title, page, size);
-		} catch (QaTreeException e) {
+		} catch (Exception e) {
 			returnError(e, dto);
 		}
 		return dto;
@@ -166,7 +166,7 @@ public class QaTreeController extends QaBaseController{
 		QaBaseTransfer dto = new QaBaseTransfer();
 		try {
 			dto = qaTreeService.save(node);
-		} catch (QaTreeException e) {
+		} catch (Exception e) {
 			returnError(e, dto);
 		}
 		return dto;
@@ -186,7 +186,7 @@ public class QaTreeController extends QaBaseController{
 		QaBaseTransfer dto = new QaBaseTransfer();
 		try {
 			dto = qaTreeService.update(node);
-		} catch (QaTreeException e) {
+		} catch (Exception e) {
 			returnError(e, dto);
 		} 
 		return dto;
@@ -206,7 +206,7 @@ public class QaTreeController extends QaBaseController{
 		QaBaseTransfer dto = new QaBaseTransfer();
 		try {
 			dto = qaTreeService.delete(id);
-		} catch (QaTreeException e) {
+		} catch (Exception e) {
 			returnError(e, dto);
 		}
 		return dto;
@@ -230,7 +230,7 @@ public class QaTreeController extends QaBaseController{
         try {
             FileUtil.uploadFile(image.getBytes(), uploadpath, fileName);
             dto.setContent(downloadpath);
-        } catch (Exception e) {
+        } catch (IOException e) {
         	returnError(e, dto);
         }
         //返回json

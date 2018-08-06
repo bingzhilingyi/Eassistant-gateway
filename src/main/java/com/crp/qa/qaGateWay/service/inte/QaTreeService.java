@@ -61,6 +61,8 @@ public interface QaTreeService {
 	 * @throws QaUserException
 	 */
 	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title) throws QaTreeException;
+	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title,List<String> domain) throws QaTreeException;
+	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title,List<String> domain,Boolean strict) throws QaTreeException;
 	
 	/**
 	 * 根据title模糊分页查找节点
@@ -116,6 +118,8 @@ public interface QaTreeService {
 	 * @throws QaTreeException
 	 */
 	public QaGenericBaseTransfer<QaTreeDto> findChildrenByTitle(String title) throws QaTreeException;
+	public QaGenericBaseTransfer<QaTreeDto> findChildrenByTitle(String title,List<String> domain) throws QaTreeException;
+	public QaGenericBaseTransfer<QaTreeDto> findChildrenByTitle(String title,List<String> domain,Boolean strict) throws QaTreeException;
 	
 	/**
 	 * 根据keyword所有可能的节点
@@ -135,7 +139,9 @@ public interface QaTreeService {
 	 * @Date 2018年7月17日
 	 * @author huangyue
 	 */
-	public QaGenericPagedTransfer<QaTreeSimpleDto> findPagedByTitleOrKeyword(String keyword,Integer page,Integer size) throws QaTreeException;
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findPagedByTitleOrKeyword(String keyword,Integer page,Integer size) throws QaTreeException,NullPointerException;
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findPagedByTitleOrKeyword(String keyword,Integer page,Integer size,List<String> domain) throws QaTreeException,NullPointerException;
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findPagedByTitleOrKeyword(String keyword,Integer page,Integer size,List<String> domain,Boolean strict) throws QaTreeException,NullPointerException;
 	
 	/**
 	 * 以rank值排序查找指定数量的节点
@@ -144,14 +150,8 @@ public interface QaTreeService {
 	 * @return
 	 * @throws QaTreeException
 	 */
-	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(Integer size) throws QaTreeException;
-
-	/**
-	 * 把该查询条件记录进查询历史中
-	 * @param title
-	 * @throws QaTreeException
-	 * @Date 2018年6月21日
-	 * @author huangyue
-	 */
-	public void searchRecord(String title) throws QaTreeException;
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(Integer size) throws QaTreeException,NullPointerException;
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(Integer size,List<String> domain) throws QaTreeException,NullPointerException;
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(Integer size,List<String> domain,Boolean strict) throws QaTreeException,NullPointerException;
+	
 }

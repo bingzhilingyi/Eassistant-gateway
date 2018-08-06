@@ -4,10 +4,12 @@
  */
 package com.crp.qa.qaGateWay.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,12 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeDto;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeSimpleDto;
 import com.crp.qa.qaGateWay.service.inte.QaClientService;
+import com.crp.qa.qaGateWay.service.inte.QaSearchHistoryService;
 import com.crp.qa.qaGateWay.service.inte.QaTreeService;
 import com.crp.qa.qaGateWay.util.exception.QaClientException;
 import com.crp.qa.qaGateWay.util.exception.QaTreeException;
 import com.crp.qa.qaGateWay.util.transfer.QaBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericBaseTransfer;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericPagedTransfer;
+
 
 /**
  * @author huangyue
@@ -38,6 +42,9 @@ public class QaClientController extends QaBaseController{
 	@Resource(name="qaTreeService")
 	private QaTreeService qaTreeService;
 	
+	@Resource(name="QaSearchHistoryService")
+	private QaSearchHistoryService qaSearchHistoryService;
+	
 	/**
 	 * 根据标题查找
 	 * @param title
@@ -46,14 +53,21 @@ public class QaClientController extends QaBaseController{
 	 * @author huangyue
 	 */
 	@GetMapping(path="/findByTitle")
-	public QaGenericBaseTransfer<QaTreeDto> findByTitle(@RequestParam(value="title") String title) {
+	public QaGenericBaseTransfer<QaTreeDto> findByTitle(
+			@RequestParam(value="title") String title,
+			@Nullable @RequestParam(value="domain") String domain) {
 		QaGenericBaseTransfer<QaTreeDto> dto = new QaGenericBaseTransfer<QaTreeDto>();
 		try {
 			//异步记录查询历史
-			qaTreeService.searchRecord(title);
+			qaSearchHistoryService.searchRecord(title);
 			//进行查询
-			dto = qaClientService.findByTitle(title);
-		} catch (QaClientException | QaTreeException e ) {
+			if(domain==null) {
+				dto = qaClientService.findByTitle(title);
+			}else {
+				List<String> domainList = Arrays.asList(domain.split(","));
+				dto = qaClientService.findByTitle(title,domainList);
+			}
+		} catch (Exception e ) {
 			returnError(e, dto);
 		}
 		return dto;
@@ -67,11 +81,18 @@ public class QaClientController extends QaBaseController{
 	 * @author huangyue
 	 */
 	@GetMapping(path="/findTopRank")
-	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(@RequestParam(value="size") Integer size) {
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(@RequestParam(value="size") Integer size,
+			@Nullable @RequestParam(value="domain") String domain) {
 		QaGenericPagedTransfer<QaTreeSimpleDto> dto = new QaGenericPagedTransfer<QaTreeSimpleDto>();
 		try {
-			dto = qaClientService.findTopRank(size);
-		} catch (QaClientException e) {
+			//进行查询
+			if(domain==null) {
+				dto = qaTreeService.findTopRank(size);
+			}else {
+				List<String> domainList = Arrays.asList(domain.split(","));
+				dto = qaTreeService.findTopRank(size,domainList);
+			}
+		} catch (QaTreeException e) {
 			returnError(e, dto);
 		}
 		return dto;

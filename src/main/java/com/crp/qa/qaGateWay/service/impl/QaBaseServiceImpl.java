@@ -6,6 +6,7 @@ package com.crp.qa.qaGateWay.service.impl;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -151,6 +152,22 @@ public class QaBaseServiceImpl implements QaBaseService{
         // 请求体
         HttpEntity<String> entity = new HttpEntity<>(str, headers);
         return entity;
+	}
+	
+	/**
+	 * 检查对象是否为null或空
+	 * @param o
+	 * @param message
+	 * @throws NullPointerException
+	 * @Date 2018年7月21日
+	 * @author huangyue
+	 */
+	public void checkNull(Object o,String message) throws NullPointerException {
+		if( o == null 
+				|| ( o instanceof String && "".equals( (String)o ) ) 
+				|| ( o instanceof List && ((List<?>)o).size()==0) ){					 
+			throw new NullPointerException(message);
+		}
 	}
 
 }

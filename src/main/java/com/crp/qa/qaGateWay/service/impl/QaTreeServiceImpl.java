@@ -62,10 +62,8 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 	}
 
 	@Override
-	public QaGenericListTransfer<QaTreeSimpleDto> findByParentId(Integer parentId) throws QaTreeException {
-		if(parentId==null) {
-			throw new QaTreeException("传入parentId为null！");
-		}
+	public QaGenericListTransfer<QaTreeSimpleDto> findByParentId(Integer parentId) throws QaTreeException,NullPointerException {
+		checkNull(parentId,"传入parentId为null！");
 		String url = URL_CORE+"/tree/getByParentId/{parentId}?token={token}";
 		//获取参数集合
 		Map<String,String> uriVariables= this.getParamMap("CORE");
@@ -82,10 +80,8 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 	}
 
 	@Override
-	public QaGenericBaseTransfer<QaTreeDto> findById(Integer id) throws QaTreeException {
-		if(id==null) {
-			throw new QaTreeException("传入id为null！");
-		}
+	public QaGenericBaseTransfer<QaTreeDto> findById(Integer id) throws QaTreeException,NullPointerException {
+		checkNull(id,"传入id为null！");
 		String url = URL_CORE+"/tree/getById/{Id}?token={token}";
 		//获取参数集合
 		Map<String,String> uriVariables= this.getParamMap("CORE");
@@ -102,15 +98,30 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 	}
 
 	@Override
-	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title) throws QaTreeException {
-		if(title==null || title.trim().equals("")) {
-			throw new QaTreeException("title is null");
+	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title) throws QaTreeException,NullPointerException {
+		return findByTitle(title,null,false);
+	}
+	
+	@Override
+	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title, List<String> domain) throws QaTreeException {
+		return findByTitle(title,domain,true);
+	}
+	
+	@Override
+	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title,List<String> domain,Boolean strict) throws QaTreeException,NullPointerException{
+		title = title==null?"":title.trim();
+		checkNull(title,"title is null");
+		if(strict) {
+			checkNull(domain,"domain is null");
 		}
-		title = title.trim();
-		String url = URL_CORE+"/tree/getByTitle?token={token}&title={title}";
+		String url = URL_CORE+"/tree/findByTitle?token={token}&title={title}";
 		//获取参数集合
 		Map<String,String> uriVariables= this.getParamMap("CORE");
 		uriVariables.put("title", title);
+		if(strict) {
+			url = url + "&domain={domain}";
+			uriVariables.put("domain", domain.toString());
+		}
 		ParameterizedTypeReference<QaGenericBaseTransfer<QaTreeDto>> typeRef = 
 				new ParameterizedTypeReference<QaGenericBaseTransfer<QaTreeDto>>() {};
 		try {
@@ -122,11 +133,9 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 	}
 
 	@Override
-	public QaGenericPagedTransfer<QaTreeSimpleDto> findPagedByTitleLike(String title, Integer page, Integer size) throws QaTreeException {
-		if(title==null || title.trim().equals("")) {
-			throw new QaTreeException("title is null");
-		}
-		title = title.trim();
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findPagedByTitleLike(String title, Integer page, Integer size) throws QaTreeException,NullPointerException {
+		title = title==null?"":title.trim();
+		checkNull(title,"title is null");
 		String url = URL_CORE+"/tree/getPagedByTitleLike?token={token}&title={title}&page={page}&size={size}";
 		//获取参数集合
 		Map<String,String> uriVariables= this.getParamMap("CORE");
@@ -144,7 +153,10 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 	}
 
 	@Override
-	public QaBaseTransfer save(String node) throws QaTreeException {
+	public QaBaseTransfer save(String node) throws QaTreeException ,NullPointerException{
+		node = node==null?"":node.trim();
+		checkNull(node,"node is null");
+		
 		String url = URL_CORE+"/tree/save";
 		//注意，post只能用MultiValueMap传递表单
 		MultiValueMap<String,String> uriVariables= this.getMultiValueMap("CORE");
@@ -160,7 +172,10 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 	}
 
 	@Override
-	public QaBaseTransfer update(String node) throws QaTreeException {
+	public QaBaseTransfer update(String node) throws QaTreeException,NullPointerException {
+		node = node==null?"":node.trim();
+		checkNull(node,"node is null");
+		
 		String url = URL_CORE+"/tree/update?token={token}";
 		Map<String,String> uriVariables= this.getParamMap("CORE");
 		Map<String,String> bodyVariables= new HashMap<String,String>();
@@ -175,7 +190,9 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 	}
 
 	@Override
-	public QaBaseTransfer delete(Integer id) throws QaTreeException {
+	public QaBaseTransfer delete(Integer id) throws QaTreeException,NullPointerException {
+		checkNull(id,"id is null");
+		
 		String url = URL_CORE+"/tree/delete/{id}?token={token}";
 		Map<String,String> uriVariables= this.getParamMap("CORE");
 		uriVariables.put("id", id.toString());
@@ -188,17 +205,32 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 			throw new QaTreeException("调用服务出错了！ uri:" + url);
 		}
 	}
-
+	
 	@Override
-	public QaGenericBaseTransfer<QaTreeDto> findChildrenByTitle(String title) throws QaTreeException {
+	public QaGenericBaseTransfer<QaTreeDto> findChildrenByTitle(String title) throws QaTreeException,NullPointerException {
+		return findChildrenByTitle(title,null,false);
+	}
+	
+	@Override
+	public QaGenericBaseTransfer<QaTreeDto> findChildrenByTitle(String title,List<String> domain) throws QaTreeException,NullPointerException {
+		return findChildrenByTitle(title,domain,true);
+	}
+	
+	@Override
+	public QaGenericBaseTransfer<QaTreeDto> findChildrenByTitle(String title,List<String> domain,Boolean strict) throws QaTreeException,NullPointerException {
 		title = title==null?"":title.trim();
-		if(title.equals("")) {
-			throw new QaTreeException("title is null");
+		checkNull(title,"title is null");
+		if(strict) {
+			checkNull(domain,"domain is null");
 		}
 		String url = URL_CORE+"/tree/findChildrenByTitle?token={token}&title={title}";
 		//获取参数集合
 		Map<String,String> uriVariables= this.getParamMap("CORE");
 		uriVariables.put("title", title);
+		if(strict) {
+			url = url + "&domain={domain}";
+			uriVariables.put("domain", domain.toString());
+		}
 		ParameterizedTypeReference<QaGenericBaseTransfer<QaTreeDto>> typeRef = 
 				new ParameterizedTypeReference<QaGenericBaseTransfer<QaTreeDto>>() {};
 		try {
@@ -210,11 +242,9 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 	}
 	
 	@Override
-	public QaGenericListTransfer<QaTreeSimpleDto> findByTitleOrKeyword(String keyword) throws QaTreeException{
+	public QaGenericListTransfer<QaTreeSimpleDto> findByTitleOrKeyword(String keyword) throws QaTreeException,NullPointerException{
 		keyword = keyword==null?"":keyword.trim();
-		if(keyword.equals("")) {
-			throw new QaTreeException("keyword is null");
-		}
+		checkNull(keyword,"keyword is null");
 		String url = URL_CORE+"/tree/findByTitleOrKeyword?token={token}&keyword={keyword}";
 		Map<String,String> uriVariables= this.getParamMap("CORE");
 		uriVariables.put("keyword", keyword);
@@ -232,13 +262,27 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 	}
 	
 	@Override
-	public QaGenericPagedTransfer<QaTreeSimpleDto> findPagedByTitleOrKeyword(String keyword, Integer page, Integer size) throws QaTreeException {
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findPagedByTitleOrKeyword(String keyword, Integer page, Integer size) throws QaTreeException,NullPointerException {
+		return findPagedByTitleOrKeyword(keyword,page,size,null,false);
+	}
+	
+	@Override
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findPagedByTitleOrKeyword(String keyword,
+			Integer page, Integer size,List<String> domain) throws QaTreeException,NullPointerException {
+		return findPagedByTitleOrKeyword(keyword,page,size,domain,true);
+	}
+	
+	@Override
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findPagedByTitleOrKeyword(String keyword,
+			Integer page, Integer size,List<String> domain,Boolean Strict) throws QaTreeException,NullPointerException {
 		keyword = keyword==null?"":keyword.trim();
 		page = page==null?0:page;
 		size = size==null?10:size;
-		if(keyword==null || keyword.trim().equals("")) {
-			throw new QaTreeException("title is null");
-		}else if(page<0) {
+		checkNull(keyword,"keyword is null");
+		if(Strict) {
+			checkNull(domain,"domain is empty");
+		}
+		if(page<0) {
 			throw new QaTreeException("current page must not less than zero");
 		}else if(size<1) {
 			throw new QaTreeException("page size must not less than 1");
@@ -249,6 +293,11 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 		uriVariables.put("keyword", keyword);
 		uriVariables.put("page", page.toString());
 		uriVariables.put("size", size.toString());
+		//如果domain存在，就发送domain
+		if(Strict) {
+			uriVariables.put("domain", domain.toString());
+			url = url + "&domain={domain}";
+		}
 		//当返回的数据类型比较复杂时（比如返回List）,需要用ParameterizedTypeReference来返回特定数据类型
 		ParameterizedTypeReference<QaGenericPagedTransfer<QaTreeSimpleDto>> typeRef = 
 				new ParameterizedTypeReference<QaGenericPagedTransfer<QaTreeSimpleDto>>() {};
@@ -260,13 +309,33 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 			throw new QaTreeException(new StringBuilder("调用服务出错了！ uri:").append(url).append(" keyword:").append(keyword).toString());
 		}
 	}
+	
+	@Override
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(Integer size) throws QaTreeException,NullPointerException{
+		return findTopRank(size,null,false);
+	}
+	
+	@Override
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(Integer size,List<String> domain) throws QaTreeException,NullPointerException{
+		return findTopRank(size,domain,true);
+	}
 
 	@Override
-	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(Integer size) throws QaTreeException{
+	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(Integer size,List<String> domain,Boolean Strict) throws QaTreeException,NullPointerException{
+		size = size==null?100:size;
+		if(Strict) {
+			checkNull(domain,"传入域为空");
+		}
 		String url = URL_CORE+"/tree/findTopRank?token={token}&size={size}";
 		//获取参数集合
 		Map<String,String> uriVariables= this.getParamMap("CORE");
 		uriVariables.put("size", size.toString());
+		//如果domain存在，就发送domain
+		if(Strict) {
+			uriVariables.put("domain", domain.toString());
+			url = url + "&domain={domain}";
+		}
+		
 		try {
 			//get json数据
 			@SuppressWarnings("unchecked")
@@ -277,20 +346,6 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 		}
 	}
 
-	@Override
-	@Async
-	public void searchRecord(String title) throws QaTreeException {
-		String url = URL_CORE+"/tree/searchRecord";
-		//注意，post只能用MultiValueMap传递表单
-		MultiValueMap<String,String> uriVariables= this.getMultiValueMap("CORE");
-		uriVariables.add("title", title);
-		try {
-			//发起rest请求
-			restTemplate.postForEntity(url, uriVariables, JSONObject.class).getBody();
-		}catch(Exception e) {
-			throw new QaTreeException("调用服务出错了！ uri:" + url);
-		}
-	}
-
+	
 	
 }

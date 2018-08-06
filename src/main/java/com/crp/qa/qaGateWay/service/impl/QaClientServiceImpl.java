@@ -35,30 +35,43 @@ public class QaClientServiceImpl extends QaBaseServiceImpl implements QaClientSe
 
 	@Override
 	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title) throws QaClientException{
+		return findByTitle(title,null,false);
+	}
+	
+	@Override
+	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title,List<String> domain) throws QaClientException{
+		return findByTitle(title,domain,true);
+	}
+	
+	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title,List<String> domain,Boolean strict) throws QaClientException{
 		title = title==null?"":title.trim();
 		if(title.equals("")) {
 			throw new QaClientException("输入的title为空！");
 		}
+		if(strict && (domain==null || domain.size()==0)) {
+			throw new QaClientException("输入的domain为空！");
+		}
 		QaGenericBaseTransfer<QaTreeDto> dto = new QaGenericBaseTransfer<QaTreeDto>();
 		try {
 			//精确查找
-			dto = qaTreeService.findChildrenByTitle(title);
+			if(strict) {
+				dto = qaTreeService.findChildrenByTitle(title,domain);
+			}else {
+				dto = qaTreeService.findChildrenByTitle(title);
+			}
+			
 			//状态设置为无更多信息
 			dto.setStage(QaClientStage.END);
 			//如果查询内容为空，说明精确查询无匹配，则进行模糊查询
 			if(dto.getContent()==null) {
 				//模糊查
-				//QaGenericPagedTransfer<QaTreeSimpleDto> dto2 = qaTreeService.findPagedByTitleLike(title, 0, 10);
-				QaGenericPagedTransfer<QaTreeSimpleDto> dto2 = qaTreeService.findPagedByTitleOrKeyword(title, 0, 10);
-				
-				//如果结果还是空，那么就去查关键字，关键字要求精确查询
-//				if(dto2.getContent().size()==0) {
-//					dto2 = qaTreeService.findPagedByKeyword(title,0,10);
-//				}else {
-//					//状态设置为还有更多信息
-//					dto.setStage(QaClientStage.MORE);
-//				}
-				
+				QaGenericPagedTransfer<QaTreeSimpleDto> dto2;
+				if(strict) {
+					dto2 = qaTreeService.findPagedByTitleOrKeyword(title, 0, 10,domain);
+				} else {
+					dto2 = qaTreeService.findPagedByTitleOrKeyword(title, 0, 10);
+				}
+							
 				//取到查询结果
 				List<QaTreeSimpleDto> l = dto2.getContent();
 				//把结果放入到一个空对象里

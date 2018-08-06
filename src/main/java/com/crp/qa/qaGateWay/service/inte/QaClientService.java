@@ -22,7 +22,7 @@ public interface QaClientService {
 	/**
 	 * 根据title去查找结果，有如下功能：
 	 * 	1.精确查找该标题,找到该节点以及其子集；
-	 * 	2.如果精确查找不到，改为模糊查询
+	 * 	2.如果精确查找不到，改为模糊查询,标题或关键字包含就显示
 	 * @author huangyue
 	 * @date 2018年6月1日 下午5:31:17
 	 * @param title
@@ -30,6 +30,10 @@ public interface QaClientService {
 	 * @throws QaClientException
 	 */
 	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title) throws QaClientException;
+	
+	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title,List<String> domain) throws QaClientException;
+	
+	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title,List<String> domain,Boolean strict) throws QaClientException;
 
 	/**
 	 * 查找指定数量的最高排名节点

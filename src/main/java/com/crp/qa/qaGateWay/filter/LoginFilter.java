@@ -77,15 +77,11 @@ public class LoginFilter implements Filter{
 		    	filterChain.doFilter(servletRequest, servletResponse);
 		    	return;
 			}else if(path.indexOf("/client") > -1){
-				//如果是client访问，判断token是否正确，正确就通过,否则跳转到错误页面
-				if(this.CLIENT_TOKEN.equals(token)) {
+				//如果是client访问，判断token是否为客户token，如果不是还要进行下面的验证
+				if(token!=null && this.CLIENT_TOKEN.equals(token)) {
 					//过滤结束
 			    	filterChain.doFilter(servletRequest, servletResponse);
 			    	return;
-				} else {
-					//跳到错误页
-					servletResponse.sendRedirect(basepath + "/error/notoken");
-					return;
 				}
 			}
 			//如果没有token，或token不匹配，则返回错误
@@ -93,6 +89,7 @@ public class LoginFilter implements Filter{
 				servletResponse.sendRedirect(basepath + "/error/notoken");
 				return;
 			}
+			
 			filterChain.doFilter(servletRequest, servletResponse);
 			return;
 		}catch(Exception e) {

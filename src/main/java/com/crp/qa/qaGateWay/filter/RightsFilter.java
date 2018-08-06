@@ -23,6 +23,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.crp.qa.qaGateWay.domain.dto.QaSysUserDto;
+import com.crp.qa.qaGateWay.domain.dto.QaSysUserDto.UserRights;
 import com.crp.qa.qaGateWay.service.inte.QaTokenService;
 import com.alibaba.fastjson.JSONObject;
 
@@ -74,45 +75,41 @@ public class RightsFilter implements Filter{
 			for(QaSysUserDto.UserRights right:rights) {
 				rightsMap.put(right.getRightsCode(), right);
 			}
-			//拦截请求URI以及对应的权限编码
-			String[] uris = {"/user/","/group/"};
-			String[] rightsCodes = {"userList","groupList"};
+			//会被拦截的请求URI以及对应的权限编码
+			//不在这些请求里的url将不会被拦截
+			String[] uris = {"/user/","/group/","/tree/"}; //url
+			String[] rightsCodes = {"userList","groupList","tree"}; //url对应的权限编码
 			//遍历所有可能的请求，找到对应的
 			for(int i=0;i<uris.length;i++) {
-				//找出对应的请求，处理完毕后跳出循环
 				if(path.indexOf(uris[i])>-1) {
-					//增删查改分别需要不同的权限
-					if(path.indexOf("/find")>-1) {
-						if(rightsMap.get(rightsCodes[i]).getRightsSearch().equals("Y")) {
-							//过滤结束
-					    	filterChain.doFilter(servletRequest, servletResponse);
-					    	return;
-						}
+					boolean isPass = false;
+					UserRights nowRight = rightsMap.get(rightsCodes[i]);
+					if(nowRight == null) {
+						
+					}else if(path.indexOf("/find")>-1) {
+						
+						isPass = nowRight.getRightsSearch().equals("Y");
+						
 					}else if(path.indexOf("/save")>-1) {
-						if(rightsMap.get(rightsCodes[i]).getRightsCreate().equals("Y")) {
-							//过滤结束
-					    	filterChain.doFilter(servletRequest, servletResponse);
-					    	return;
-						}
+						
+						isPass = nowRight.getRightsCreate().equals("Y");
+						
 					}else if(path.indexOf("/update")>-1) {
-						if(rightsMap.get(rightsCodes[i]).getRightsUpdate().equals("Y")) {
-							//过滤结束
-					    	filterChain.doFilter(servletRequest, servletResponse);
-					    	return;
-						}
+						
+						isPass = nowRight.getRightsUpdate().equals("Y");
+						
 					}else if(path.indexOf("/delete")>-1) {
-						if(rightsMap.get(rightsCodes[i]).getRightsDelete().equals("Y")) {
-							//过滤结束
-					    	filterChain.doFilter(servletRequest, servletResponse);
-					    	return;
-						}
+						
+						isPass = nowRight.getRightsDelete().equals("Y");
+						
 					}else {
-						//如果是别的请求uri，暂时认为全部通过
-						//过滤结束
-				    	filterChain.doFilter(servletRequest, servletResponse);
+						isPass = true;
+					}
+					if(isPass) {
+						filterChain.doFilter(servletRequest, servletResponse);
 				    	return;
 					}
-					//只有当uri是增删查改且无权限时，才会走到这里，那么就直接重定向到错误页
+					//无权限时报错
 					servletResponse.sendRedirect(basepath + "/error/noRight");
 					return;
 				}
