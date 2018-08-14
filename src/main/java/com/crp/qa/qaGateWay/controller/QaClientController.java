@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -110,6 +111,29 @@ public class QaClientController extends QaBaseController{
 		QaBaseTransfer dto = new QaBaseTransfer();
 		try {
 			dto = qaTreeService.findRoot();
+		} catch (QaTreeException e) {
+			returnError(e, dto);
+		}
+		return dto;
+	}
+	
+	/**
+	 * 点赞或踩
+	 * @param id
+	 * @param isLike
+	 * @return
+	 * @Date 2018年8月13日
+	 * @author huangyue
+	 */
+	@PostMapping(path="/evaluate")
+	public QaBaseTransfer evaluate(
+			@RequestParam(value="id") Integer id,
+			@RequestParam(value="isLike") Boolean isLike
+			) {
+		//创建返回对象
+		QaBaseTransfer dto = new QaBaseTransfer();
+		try {
+			qaTreeService.evaluate(id,isLike);
 		} catch (QaTreeException e) {
 			returnError(e, dto);
 		}

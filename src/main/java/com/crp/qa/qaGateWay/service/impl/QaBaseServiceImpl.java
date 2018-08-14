@@ -5,6 +5,7 @@
 package com.crp.qa.qaGateWay.service.impl;
 
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class QaBaseServiceImpl implements QaBaseService{
 	
 	final Logger LOGGER = LoggerFactory.getLogger(QaBaseServiceImpl.class);
+	
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
 	@Autowired
 	protected RestTemplate restTemplate;
@@ -164,7 +167,7 @@ public class QaBaseServiceImpl implements QaBaseService{
 	 */
 	public void checkNull(Object o,String message) throws NullPointerException {
 		if( o == null 
-				|| ( o instanceof String && "".equals( (String)o ) ) 
+				|| ( o instanceof String && "".equals( ((String)o).trim() ) ) 
 				|| ( o instanceof List && ((List<?>)o).size()==0) ){					 
 			throw new NullPointerException(message);
 		}

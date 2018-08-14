@@ -4,6 +4,8 @@
  */
 package com.crp.qa.qaGateWay.controller;
 
+import java.text.SimpleDateFormat;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,7 +22,7 @@ import com.crp.qa.qaGateWay.util.transfer.QaGenericBaseTransfer;
 public class QaBaseController {
 	
 	final Logger LOGGER = LoggerFactory.getLogger(QaBaseController.class);
-		
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");	
 	/**
 	 * 返回错误信息并打印日志的通用方法
 	 * @author huangyue

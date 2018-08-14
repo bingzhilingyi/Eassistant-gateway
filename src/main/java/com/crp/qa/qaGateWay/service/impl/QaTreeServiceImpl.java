@@ -347,5 +347,23 @@ public class QaTreeServiceImpl extends QaBaseServiceImpl implements QaTreeServic
 	}
 
 	
-	
+	@Override
+	public QaBaseTransfer evaluate(Integer id,Boolean isLike) throws QaTreeException ,NullPointerException{
+		checkNull(id,"知识页id为空");
+		isLike = isLike==null?false:isLike;
+		
+		String url = URL_CORE+"/tree/evaluate";
+		//注意，post只能用MultiValueMap传递表单
+		MultiValueMap<String,String> uriVariables= this.getMultiValueMap("CORE");
+		uriVariables.add("id", id.toString());
+		uriVariables.add("isLike", isLike.toString());
+		try {
+			//发起rest请求
+			JSONObject json = restTemplate.postForEntity(url, uriVariables, JSONObject.class).getBody();
+			QaBaseTransfer dto = json.toJavaObject(QaBaseTransfer.class);
+			return dto;
+		}catch(Exception e) {
+			throw new QaTreeException("调用服务出错了！ uri:" + url);
+		}
+	}
 }

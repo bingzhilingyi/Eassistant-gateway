@@ -2,6 +2,7 @@ package com.crp.qa.qaGateWay.controller;
 
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,4 +47,16 @@ public class QaClientControllerTest {
 	    System.out.println(result.getResponse().getContentAsString());  
 	}
 
+	@Test
+	public void evaluate() throws Exception{
+		MvcResult result = mockMvc.perform(
+    			post("/client/evaluate")
+    			.param("token", token).param("id", "1").param("isLike", "true")
+    		)
+    		.andExpect(status().isOk())// 模拟向testRest发送get请求  
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))// 预期返回值的媒体类型text/plain;charset=UTF-8 
+            .andReturn();// 返回执行请求的结果  
+	    System.out.println("---------------findAll-----------------");    
+	    System.out.println(result.getResponse().getContentAsString());  
+	}
 }

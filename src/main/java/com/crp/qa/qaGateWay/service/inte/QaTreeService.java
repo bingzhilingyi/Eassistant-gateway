@@ -154,4 +154,5 @@ public interface QaTreeService {
 	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(Integer size,List<String> domain) throws QaTreeException,NullPointerException;
 	public QaGenericPagedTransfer<QaTreeSimpleDto> findTopRank(Integer size,List<String> domain,Boolean strict) throws QaTreeException,NullPointerException;
 	
+	public QaBaseTransfer evaluate(Integer id,Boolean isLike) throws QaTreeException ,NullPointerException;
 }

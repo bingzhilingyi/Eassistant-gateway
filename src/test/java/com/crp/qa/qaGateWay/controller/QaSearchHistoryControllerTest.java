@@ -41,7 +41,7 @@ public class QaSearchHistoryControllerTest {
 	public void findTopRank() throws Exception{
         @SuppressWarnings("unused")
 		MvcResult result = mockMvc.perform(
-        			get("/history/findTopRank").param("token", token).param("rank", "20")
+        			get("/history/findTopRank").param("token", token).param("size", "20")
         		)
         		.andExpect(status().isOk())// 模拟向testRest发送get请求  
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))// 预期返回值的媒体类型text/plain;charset=UTF-8  

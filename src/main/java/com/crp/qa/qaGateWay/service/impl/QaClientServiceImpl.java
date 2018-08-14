@@ -12,11 +12,14 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.crp.qa.qaGateWay.domain.dto.QaSearchNoResultDto;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeDto;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeSimpleDto;
 import com.crp.qa.qaGateWay.service.inte.QaClientService;
+import com.crp.qa.qaGateWay.service.inte.QaSearchNoResultService;
 import com.crp.qa.qaGateWay.service.inte.QaTreeService;
 import com.crp.qa.qaGateWay.util.exception.QaClientException;
+import com.crp.qa.qaGateWay.util.exception.QaSearchNoResultException;
 import com.crp.qa.qaGateWay.util.exception.QaTreeException;
 import com.crp.qa.qaGateWay.util.transfer.QaClientStage;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericBaseTransfer;
@@ -32,6 +35,9 @@ public class QaClientServiceImpl extends QaBaseServiceImpl implements QaClientSe
 	
 	@Resource(name="qaTreeService")
 	private QaTreeService qaTreeService;
+	
+	@Resource(name="qaSearchNoResultService")
+	QaSearchNoResultService qaSearchNoResultService;
 
 	@Override
 	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title) throws QaClientException{
@@ -74,13 +80,19 @@ public class QaClientServiceImpl extends QaBaseServiceImpl implements QaClientSe
 							
 				//取到查询结果
 				List<QaTreeSimpleDto> l = dto2.getContent();
+				//如果模糊查也查不到结果，就记录下这次查询
+				if(l.size()==0) {
+					QaSearchNoResultDto record = new QaSearchNoResultDto();
+					record.setRecordTitle(title);
+					qaSearchNoResultService.save(record);
+				}
 				//把结果放入到一个空对象里
 				QaTreeDto emptytree = new QaTreeDto();
 				emptytree.setChild(new HashSet<QaTreeSimpleDto>(l));
 				//把空对象给返回值
 				dto.setContent(emptytree);
 			}
-		} catch (QaTreeException e) {
+		} catch (QaTreeException | QaSearchNoResultException | NullPointerException e) {
 			throw new QaClientException("查询层级结构出错",e);
 		}
 		return dto;

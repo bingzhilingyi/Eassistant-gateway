@@ -36,11 +36,6 @@ public class QaClientServiceImplTest {
 		assertTrue(d.getContent().getChild().size()>0);
 	}
 	
-	@Test
-	public void testFindByTitle3() throws Exception{
-		QaGenericBaseTransfer<QaTreeDto> d = qaClientService.findByTitle("srm 供应商管理 关系");
-		assertTrue(d.getContent().getChild().size()>0);
-	}
 	
 	@Test
 	public void testFindByTitle4() throws Exception{
