@@ -60,7 +60,7 @@ public class QaClientController extends QaBaseController{
 		QaGenericBaseTransfer<QaTreeDto> dto = new QaGenericBaseTransfer<QaTreeDto>();
 		try {
 			//异步记录查询历史
-			qaSearchHistoryService.searchRecord(title);
+			//qaSearchHistoryService.searchRecord(title);
 			//进行查询
 			if(domain==null) {
 				dto = qaClientService.findByTitle(title);

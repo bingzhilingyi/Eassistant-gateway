@@ -16,6 +16,7 @@ import com.crp.qa.qaGateWay.domain.dto.QaSearchNoResultDto;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeDto;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeSimpleDto;
 import com.crp.qa.qaGateWay.service.inte.QaClientService;
+import com.crp.qa.qaGateWay.service.inte.QaSearchHistoryService;
 import com.crp.qa.qaGateWay.service.inte.QaSearchNoResultService;
 import com.crp.qa.qaGateWay.service.inte.QaTreeService;
 import com.crp.qa.qaGateWay.util.exception.QaClientException;
@@ -38,6 +39,9 @@ public class QaClientServiceImpl extends QaBaseServiceImpl implements QaClientSe
 	
 	@Resource(name="qaSearchNoResultService")
 	QaSearchNoResultService qaSearchNoResultService;
+	
+	@Resource(name="QaSearchHistoryService")
+	private QaSearchHistoryService qaSearchHistoryService;
 
 	@Override
 	public QaGenericBaseTransfer<QaTreeDto> findByTitle(String title) throws QaClientException{
@@ -59,6 +63,7 @@ public class QaClientServiceImpl extends QaBaseServiceImpl implements QaClientSe
 		}
 		QaGenericBaseTransfer<QaTreeDto> dto = new QaGenericBaseTransfer<QaTreeDto>();
 		try {
+			boolean noResult = false; //默认是有数据返回的
 			//精确查找
 			if(strict) {
 				dto = qaTreeService.findChildrenByTitle(title,domain);
@@ -82,9 +87,10 @@ public class QaClientServiceImpl extends QaBaseServiceImpl implements QaClientSe
 				List<QaTreeSimpleDto> l = dto2.getContent();
 				//如果模糊查也查不到结果，就记录下这次查询
 				if(l.size()==0) {
-					QaSearchNoResultDto record = new QaSearchNoResultDto();
-					record.setRecordTitle(title);
-					qaSearchNoResultService.save(record);
+//					QaSearchNoResultDto record = new QaSearchNoResultDto();
+//					record.setRecordTitle(title);
+//					qaSearchNoResultService.save(record);
+					noResult = true; //无数据返回
 				}
 				//把结果放入到一个空对象里
 				QaTreeDto emptytree = new QaTreeDto();
@@ -92,7 +98,10 @@ public class QaClientServiceImpl extends QaBaseServiceImpl implements QaClientSe
 				//把空对象给返回值
 				dto.setContent(emptytree);
 			}
-		} catch (QaTreeException | QaSearchNoResultException | NullPointerException e) {
+			//记录这次查询历史
+			qaSearchHistoryService.searchRecord(title,noResult);
+			
+		} catch (QaTreeException | NullPointerException e) {
 			throw new QaClientException("查询层级结构出错",e);
 		}
 		return dto;

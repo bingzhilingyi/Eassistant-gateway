@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.crp.qa.qaGateWay.domain.dto.QaSearchHistoryDto;
 import com.crp.qa.qaGateWay.domain.dto.QaSearchNoResultDto;
 import com.crp.qa.qaGateWay.service.inte.QaSearchNoResultService;
 import com.crp.qa.qaGateWay.util.transfer.QaGenericPagedTransfer;
@@ -22,7 +23,7 @@ public class QaSearchNoResultServiceImplTest {
 	
 	@Test
 	public void findPagedAll()throws Exception{
-		QaGenericPagedTransfer<QaSearchNoResultDto> d = qaSearchNoResultService.findPagedAll(0, 20);
+		QaGenericPagedTransfer<QaSearchHistoryDto> d = qaSearchNoResultService.findPagedAll(0, 20);
 		assertTrue(d.getContent().size()>0);
 	}
 }

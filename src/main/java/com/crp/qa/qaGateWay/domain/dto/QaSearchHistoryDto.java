@@ -26,6 +26,8 @@ public class QaSearchHistoryDto implements Serializable{
 	private String attribute8;
 	private String attribute9;
 	private String attribute10;
+	private String creationDateStr;
+	
 	public Integer getHistoryId() {
 		return historyId;
 	}
@@ -127,6 +129,12 @@ public class QaSearchHistoryDto implements Serializable{
 	}
 	public void setAttribute10(String attribute10) {
 		this.attribute10 = attribute10;
+	}
+	public String getCreationDateStr() {
+		return creationDateStr;
+	}
+	public void setCreationDateStr(String creationDateStr) {
+		this.creationDateStr = creationDateStr;
 	}
 	
 	

@@ -1,7 +1,6 @@
 package com.crp.qa.qaGateWay.service.inte;
 
 import java.util.Date;
-import java.util.List;
 
 import com.crp.qa.qaGateWay.domain.dto.QaSearchCountDto;
 import com.crp.qa.qaGateWay.domain.dto.QaSearchHistoryDto;
@@ -28,7 +27,7 @@ public interface QaSearchHistoryService {
 	 * @Date 2018年6月21日
 	 * @author huangyue
 	 */
-	public void searchRecord(String title) throws QaTreeException;
+	public void searchRecord(String title,Boolean noResult) throws QaTreeException;
 	
 	/**
 	 * 根据起始时间与结束时间查询一段时间内的访问记录

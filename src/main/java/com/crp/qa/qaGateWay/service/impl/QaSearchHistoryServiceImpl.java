@@ -3,7 +3,6 @@ package com.crp.qa.qaGateWay.service.impl;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,7 +14,6 @@ import org.springframework.util.MultiValueMap;
 import com.alibaba.fastjson.JSONObject;
 import com.crp.qa.qaGateWay.domain.dto.QaSearchCountDto;
 import com.crp.qa.qaGateWay.domain.dto.QaSearchHistoryDto;
-import com.crp.qa.qaGateWay.domain.dto.QaTreeSimpleDto;
 import com.crp.qa.qaGateWay.service.inte.QaSearchHistoryService;
 import com.crp.qa.qaGateWay.util.exception.QaSearchHistoryException;
 import com.crp.qa.qaGateWay.util.exception.QaTreeException;
@@ -48,11 +46,12 @@ public class QaSearchHistoryServiceImpl extends QaBaseServiceImpl implements QaS
 
 	@Override
 	@Async
-	public void searchRecord(String title) throws QaTreeException {
+	public void searchRecord(String title,Boolean noResult) throws QaTreeException {
 		String url = URL_CORE+"/history/searchRecord";
 		//注意，post只能用MultiValueMap传递表单
 		MultiValueMap<String,String> uriVariables= this.getMultiValueMap("CORE");
 		uriVariables.add("title", title);
+		uriVariables.add("noResult", noResult.toString());
 		try {
 			//发起rest请求
 			restTemplate.postForEntity(url, uriVariables, JSONObject.class).getBody();

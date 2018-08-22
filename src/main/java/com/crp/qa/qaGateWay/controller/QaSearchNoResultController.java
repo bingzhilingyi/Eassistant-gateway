@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.crp.qa.qaGateWay.domain.dto.QaSearchHistoryDto;
 import com.crp.qa.qaGateWay.domain.dto.QaSearchNoResultDto;
 import com.crp.qa.qaGateWay.domain.dto.QaTreeSimpleDto;
 import com.crp.qa.qaGateWay.service.inte.QaSearchNoResultService;
@@ -23,11 +24,11 @@ public class QaSearchNoResultController extends QaBaseController{
 	QaSearchNoResultService qaSearchNoResultService;
 	
 	@GetMapping(path="/findPagedAll")
-	public QaGenericPagedTransfer<QaSearchNoResultDto> findPagedAll(
+	public QaGenericPagedTransfer<QaSearchHistoryDto> findPagedAll(
 			@RequestParam(value="page") Integer page,
 			@RequestParam(value="size") Integer size){
 		//创建返回对象
-		QaGenericPagedTransfer<QaSearchNoResultDto> dto = new QaGenericPagedTransfer<QaSearchNoResultDto>();
+		QaGenericPagedTransfer<QaSearchHistoryDto> dto = new QaGenericPagedTransfer<QaSearchHistoryDto>();
 		try {
 			dto = qaSearchNoResultService.findPagedAll(page, size);
 		} catch (Exception e) {
@@ -37,13 +38,13 @@ public class QaSearchNoResultController extends QaBaseController{
 	}
 	
 	@GetMapping(path="/findByCreationDateBetween")
-	public QaGenericPagedTransfer<QaSearchNoResultDto> findByCreationDateBetween(
+	public QaGenericPagedTransfer<QaSearchHistoryDto> findByCreationDateBetween(
 			@RequestParam(value="from") @Nullable String from,
 			@RequestParam(value="to") @Nullable String to,
 			@RequestParam(value="page") Integer page,
 			@RequestParam(value="size") Integer size){
 		//创建返回对象
-		QaGenericPagedTransfer<QaSearchNoResultDto> dto = new QaGenericPagedTransfer<QaSearchNoResultDto>();
+		QaGenericPagedTransfer<QaSearchHistoryDto> dto = new QaGenericPagedTransfer<QaSearchHistoryDto>();
 		Date fromDate=null,toDate=null;
 		try {
 			if(from!=null && !from.trim().equals("")) {		

@@ -51,4 +51,5 @@ public class QaSearchHistoryController extends QaBaseController {
 		}
 		return dto;
 	}
+
 }
